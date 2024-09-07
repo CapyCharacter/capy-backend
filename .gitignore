@@ -1,0 +1,17 @@
+# ...
+node_modules/
+
+# JS output of TS-JS transpiler
+dist/
+
+# Environment variables
+.env
+
+# Redis files
+dump.rdb
+
+# npm cache (in production)
+.npm/
+
+# VSCode settings
+.vscode
