@@ -99,3 +99,11 @@ export function readEnv_BACKEND_COOKIE_SAMESITE(): CookieSameSiteAttribute {
 
     envKeyIsInvalidOrMissing('BACKEND_COOKIE_SAMESITE');
 }
+
+export function readEnv_FRONTEND_URLS(): string[] {
+    const urls = readNonEmptyStringEnv('FRONTEND_URLS').split(',').map(x => x.trim());
+    if (urls.includes("")) {
+        envKeyIsInvalidOrMissing('FRONTEND_URLS');
+    }
+    return urls;
+}

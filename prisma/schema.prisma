@@ -1,0 +1,117 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider          = "mysql"
+  url               = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+}
+
+model Character {
+  id          Int    @id @default(autoincrement())
+  avatar_path String
+  name        String @unique
+  description String @db.Text
+  tagline     String
+  definition  String @db.Text
+  greeting    String @db.Text
+  voice_id    Int?
+
+  num_chats Int
+  num_likes Int
+
+  is_public Boolean
+
+  voice         Voice?         @relation(fields: [voice_id], references: [id], onUpdate: Cascade, onDelete: SetNull)
+  conversations Conversation[]
+
+  @@map("characters")
+}
+
+model Message {
+  id              Int  @id @default(autoincrement())
+  conversation_id Int
+  voice_call_id   Int?
+
+  sent_at DateTime
+  content String   @db.Text
+
+  conversation                              Conversation  @relation("messages_in_conversation", fields: [conversation_id], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  conversation_where_this_message_is_pinned Conversation? @relation("pinned_message_in_conversation")
+  voice_call                                VoiceCall?    @relation(fields: [voice_call_id], references: [id], onUpdate: Cascade, onDelete: SetNull)
+
+  @@index([conversation_id])
+  @@map("messages")
+}
+
+model Conversation {
+  id                Int  @id @default(autoincrement())
+  character_id      Int?
+  user_id           Int
+  pinned_message_id Int? @unique
+  voice_id          Int?
+
+  is_public Boolean
+
+  character      Character? @relation(fields: [character_id], references: [id], onUpdate: Cascade, onDelete: SetNull)
+  user           User       @relation(fields: [user_id], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  voice          Voice?     @relation(fields: [voice_id], references: [id], onUpdate: Cascade, onDelete: SetNull)
+  pinned_message Message?   @relation("pinned_message_in_conversation", fields: [pinned_message_id], references: [id], onUpdate: Cascade, onDelete: SetNull)
+
+  messages    Message[]   @relation("messages_in_conversation")
+  voice_calls VoiceCall[]
+
+  @@index([character_id])
+  @@index([user_id])
+  @@index([voice_id])
+  @@index([pinned_message_id])
+  @@map("conversations")
+}
+
+model User {
+  id            Int    @id @default(autoincrement())
+  email         String @unique
+  password_hash String
+  username      String @unique
+  display_name  String
+
+  is_premium Boolean
+
+  conversations Conversation[]
+
+  @@map("users")
+}
+
+model Voice {
+  id                Int    @id @default(autoincrement())
+  name              String @unique
+  description       String
+  sample_audio_path String
+
+  is_public Boolean
+
+  characters    Character[]
+  conversations Conversation[]
+
+  @@map("voices")
+}
+
+model VoiceCall {
+  id              Int      @id @default(autoincrement())
+  conversation_id Int
+  started_at      DateTime
+  finished_at     DateTime
+
+  conversation Conversation @relation(fields: [conversation_id], references: [id], onUpdate: Cascade, onDelete: Cascade)
+
+  messages Message[]
+
+  @@map("voice_calls")
+}
