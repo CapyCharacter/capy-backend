@@ -29,8 +29,9 @@ model Character {
 
   is_public Boolean
 
-  voice         Voice?         @relation(fields: [voice_id], references: [id], onUpdate: Cascade, onDelete: SetNull)
-  conversations Conversation[]
+  voice           Voice?         @relation(fields: [voice_id], references: [id], onUpdate: Cascade, onDelete: SetNull)
+  conversations   Conversation[]
+  users_who_liked User[]         @relation("users_like_characters")
 
   @@map("characters")
 }
@@ -84,7 +85,8 @@ model User {
 
   is_premium Boolean
 
-  conversations Conversation[]
+  conversations    Conversation[]
+  liked_characters Character[]    @relation("users_like_characters")
 
   @@map("users")
 }
