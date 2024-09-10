@@ -87,6 +87,7 @@ model User {
 
   conversations    Conversation[]
   liked_characters Character[]    @relation("users_like_characters")
+  auth_tokens      AuthToken[]
 
   @@map("users")
 }
@@ -116,4 +117,13 @@ model VoiceCall {
   messages Message[]
 
   @@map("voice_calls")
+}
+
+model AuthToken {
+  id Int @id @default(autoincrement())
+  user_id Int
+
+  user User @relation(fields: [user_id], references: [id], onUpdate: Cascade, onDelete: Cascade)
+
+  @@map("auth_tokens")
 }

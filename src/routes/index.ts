@@ -1,5 +1,6 @@
 import { FastifyInstance } from "fastify";
+import { apiRoutes } from "./api";
 
-export async function allRoutes(server: FastifyInstance) {
-    // TODO: Add routes here
-}
+export const allRoutes = async (server: FastifyInstance) => {
+    server.register(apiRoutes, { prefix: '/api' });
+};

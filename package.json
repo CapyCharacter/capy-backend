@@ -14,9 +14,12 @@
   "description": "",
   "dependencies": {
     "@fastify/error": "^4.0.0",
+    "@fastify/swagger": "^8.15.0",
+    "@fastify/swagger-ui": "^4.1.0",
     "@fastify/type-provider-typebox": "^4.1.0",
     "@prisma/client": "^5.19.1",
     "@sinclair/typebox": "^0.33.9",
+    "bcrypt": "^5.1.1",
     "dotenv": "^16.4.5",
     "fast-jwt": "^4.0.3",
     "fastify": "^4.28.1",
@@ -26,6 +29,7 @@
   "devDependencies": {
     "@fastify/cookie": "^9.4.0",
     "@fastify/cors": "^9.0.1",
+    "@types/bcrypt": "^5.0.2",
     "@types/node": "^22.5.4",
     "mocha": "^10.7.3",
     "nodemon": "^3.1.4",

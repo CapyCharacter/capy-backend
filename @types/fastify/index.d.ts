@@ -1,5 +1,6 @@
 // https://github.com/fastify/fastify/issues/1417#issuecomment-458601746
 
+import { Auth } from "@/types/Auth";
 import { PrismaClient } from "@prisma/client";
 import { IncomingMessage, Server, ServerResponse } from "http";
 
