@@ -39,7 +39,7 @@ export class UserServices {
                     password_hash: await bcrypt.hash(userCreate.password, NUM_PASSWORD_HASH_SALT_ROUNDS),
                     username: userCreate.display_name,
                     display_name: userCreate.display_name,
-                    
+                    avatar_url: userCreate.avatar_url,
                     is_premium: false,
                 },
             });

@@ -15,14 +15,15 @@ datasource db {
 }
 
 model Character {
-  id          Int    @id @default(autoincrement())
-  avatar_path String
-  name        String @unique
-  description String @db.Text
-  tagline     String
-  definition  String @db.Text
-  greeting    String @db.Text
-  voice_id    Int?
+  id              Int    @id @default(autoincrement())
+  avatar_url      String @db.Text
+  name            String @unique
+  description     String @db.Text
+  tagline         String
+  definition      String @db.Text
+  greeting        String @db.Text
+  voice_id        Int?
+  creator_user_id Int
 
   num_chats Int
   num_likes Int
@@ -31,6 +32,7 @@ model Character {
 
   voice           Voice?         @relation(fields: [voice_id], references: [id], onUpdate: Cascade, onDelete: SetNull)
   conversations   Conversation[]
+  creator_user    User           @relation(fields: [creator_user_id], references: [id], onUpdate: Cascade, onDelete: Cascade)
   users_who_liked User[]         @relation("users_like_characters")
 
   @@map("characters")
@@ -41,8 +43,9 @@ model Message {
   conversation_id Int
   voice_call_id   Int?
 
-  sent_at DateTime
-  content String   @db.Text
+  sent_by_user Boolean
+  sent_at      DateTime
+  content      String   @db.Text
 
   conversation                              Conversation  @relation("messages_in_conversation", fields: [conversation_id], references: [id], onUpdate: Cascade, onDelete: Cascade)
   conversation_where_this_message_is_pinned Conversation? @relation("pinned_message_in_conversation")
@@ -77,31 +80,36 @@ model Conversation {
 }
 
 model User {
-  id            Int    @id @default(autoincrement())
-  email         String @unique
+  id            Int     @id @default(autoincrement())
+  email         String  @unique
   password_hash String
-  username      String @unique
+  username      String  @unique
   display_name  String
+  avatar_url    String? @db.Text
 
   is_premium Boolean
 
-  conversations    Conversation[]
-  liked_characters Character[]    @relation("users_like_characters")
-  auth_tokens      AuthToken[]
+  conversations      Conversation[]
+  liked_characters   Character[]    @relation("users_like_characters")
+  auth_tokens        AuthToken[]
+  created_characters Character[]
+  created_voices     Voice[]
 
   @@map("users")
 }
 
 model Voice {
-  id                Int    @id @default(autoincrement())
-  name              String @unique
-  description       String
-  sample_audio_path String
+  id               Int    @id @default(autoincrement())
+  name             String @unique
+  description      String @db.Text
+  sample_audio_url String @db.Text
+  creator_user_id  Int
 
   is_public Boolean
 
   characters    Character[]
   conversations Conversation[]
+  creator_user  User           @relation(fields: [creator_user_id], references: [id], onUpdate: Cascade, onDelete: Cascade)
 
   @@map("voices")
 }
@@ -120,7 +128,7 @@ model VoiceCall {
 }
 
 model AuthToken {
-  id Int @id @default(autoincrement())
+  id      Int @id @default(autoincrement())
   user_id Int
 
   user User @relation(fields: [user_id], references: [id], onUpdate: Cascade, onDelete: Cascade)

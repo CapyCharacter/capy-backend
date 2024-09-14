@@ -6,6 +6,7 @@ export const UserInfoSchema = Type.Object({
     username: Type.String({ description: "Username, not to be confused with display name" }),
     display_name: Type.String({ description: "Display name, ideally the user's full name" }),
     is_premium: Type.Boolean({ description: "Being premium means one having purchased to upgrade his/her account to Pro" }),
+    avatar_url: Type.Union([Type.String({ description: "URL to the user's avatar" }), Type.Null()]),
 });
 
 export type UserInfo = Static<typeof UserInfoSchema>;

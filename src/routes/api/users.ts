@@ -6,11 +6,13 @@ import { UserServices } from "@/services/UserServices";
 import { Type } from "@sinclair/typebox";
 import { FastifyInstance } from "fastify";
 
-export const userRoutes = async (server: FastifyInstance) => {
-    server.get('/', {
+export const usersRoutes = async (server: FastifyInstance) => {
+    server.get<{
+        Reply: UserInfo,
+    }>('/self', {
         schema: {
-            description: "Get the user information of the currently authenticated user.",
-            tags: ['user'],
+            description: "Get the user information of the currently authenticated user. This route has some overlap with the [`GET /api/auth/info`](#/api/auth/info) route.",
+            tags: ['users'],
             response: {
                 200: UserInfoSchema,
             },
@@ -30,10 +32,10 @@ export const userRoutes = async (server: FastifyInstance) => {
     server.post<{
         Body: UserCreate,
         Reply: UserInfo,
-    }>('/create', {
+    }>('/', {
         schema: {
             description: "Sign up or register a new user account.",
-            tags: ['user'],
+            tags: ['users'],
             body: UserCreateSchema,
             response: {
                 200: UserInfoSchema,
@@ -53,10 +55,10 @@ export const userRoutes = async (server: FastifyInstance) => {
     server.patch<{
         Body: UserUpdate,
         Reply: UserInfo,
-    }>('/update', {
+    }>('/self', {
         schema: {
-            description: "Update some information of a user.",
-            tags: ['user'],
+            description: "Update some information of the currently authenticated user.",
+            tags: ['users'],
             body: UserUpdateSchema,
             response: {
                 200: UserInfoSchema,
@@ -79,10 +81,10 @@ export const userRoutes = async (server: FastifyInstance) => {
 
     server.delete<{
         Reply: null,
-    }>('/delete', {
+    }>('/self', {
         schema: {
-            description: "Delete a user account.",
-            tags: ['user'],
+            description: "Delete the currently authenticated user account.",
+            tags: ['users'],
             response: {
                 200: Type.Null(),
             },

@@ -1,5 +1,5 @@
 import 'dotenv/config';
-import { CookieSameSiteAttribute, NumberEnvRequirement, readBooleanEnv, readEnv_BACKEND_COOKIE_SAMESITE, readEnv_FRONTEND_URLS, readEnv_TRUST_PROXY, readNonEmptyStringEnv, readNumberEnv } from './helpers';
+import { CookieSameSiteAttribute, NumberEnvRequirement, readBooleanEnv, readEnv_BACKEND_COOKIE_SAMESITE, readEnv_FRONTEND_URLS, readEnv_TRUST_PROXY, readNonEmptyStringEnv, readNumberEnv, readOptionalStringEnv } from './helpers';
 
 export const DEBUG: boolean = readBooleanEnv('DEBUG');
 export const ENABLE_LOGGING: boolean = readBooleanEnv('ENABLE_LOGGING');
@@ -13,3 +13,9 @@ export const FRONTEND_URLS: string[] = readEnv_FRONTEND_URLS();
 
 export const DATABASE_URL: string = readNonEmptyStringEnv('DATABASE_URL');
 export const SHADOW_DATABASE_URL: string = readNonEmptyStringEnv('SHADOW_DATABASE_URL');
+
+export const REDIS_URL: string = readNonEmptyStringEnv('REDIS_URL');
+
+export const LLM_SOCKET_URL: string|null = readOptionalStringEnv('LLM_SOCKET_URL');
+export const TTS_SOCKET_URL: string|null = readOptionalStringEnv('TTS_SOCKET_URL');
+export const STT_SOCKET_URL: string|null = readOptionalStringEnv('STT_SOCKET_URL');

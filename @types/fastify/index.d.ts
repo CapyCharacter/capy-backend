@@ -3,6 +3,7 @@
 import { Auth } from "@/types/Auth";
 import { PrismaClient } from "@prisma/client";
 import { IncomingMessage, Server, ServerResponse } from "http";
+import { Server as SocketIOServer } from 'socket.io';
 
 declare module 'fastify' {
     export interface FastifyInstance<
@@ -11,6 +12,7 @@ declare module 'fastify' {
         HttpResponse = ServerResponse,
     > {
         prisma: PrismaClient;
+        io: SocketIOServer;
     }
 
     export interface FastifyRequest {

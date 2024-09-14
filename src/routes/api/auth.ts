@@ -1,6 +1,6 @@
 import { requireAuth } from "@/middleware/requireAuth";
-import { UserInfo, UserInfoSchema } from "@/schemas/UserInfo";
 import { UserLogin, UserLoginSchema } from "@/schemas/UserLogin";
+import { UserLoginInfo, UserLoginInfoSchema } from "@/schemas/UserLoginInfo";
 import { AuthServices } from "@/services/AuthServices";
 import { AccessTokenHelpers } from "@/utils/AccessTokenHelpers";
 import { Type } from "@sinclair/typebox";
@@ -9,14 +9,14 @@ import { FastifyInstance } from "fastify";
 export const authRoutes = async (server: FastifyInstance) => {
     server.post<{
         Body: UserLogin,
-        Reply: UserInfo,
+        Reply: UserLoginInfo,
     }>('/login', {
         schema: {
             description: "Logs a user in (authenticates that user).",
             tags: ['auth'],
             body: UserLoginSchema,
             response: {
-                200: UserInfoSchema,
+                200: UserLoginInfoSchema,
             },
         },
     }, async (req, res) => {
@@ -29,7 +29,10 @@ export const authRoutes = async (server: FastifyInstance) => {
         }
 
         AccessTokenHelpers.setToken(res, auth.token);
-        return auth.user;
+        return {
+            token: auth.token,
+            user: auth.user,
+        } satisfies UserLoginInfo;
     });
 
     server.post('/logout', {
@@ -52,5 +55,23 @@ export const authRoutes = async (server: FastifyInstance) => {
 
         AccessTokenHelpers.setToken(res, "");
         return;
+    });
+
+    server.get('/info', {
+        schema: {
+            description: "Retrieves information about the currently authenticated user. If the user is not authenticated, the server will respond with a 401 Unauthorized status.",
+            tags: ['auth'],
+            security: [{ cookieAuth: [] }],
+            response: {
+                200: UserLoginInfoSchema,
+            }
+        }
+    }, async (req, res) => {
+        const auth = await requireAuth(req, res);
+
+        return {
+            user: auth.user,
+            token: auth.token,
+        } satisfies UserLoginInfo;
     });
 };

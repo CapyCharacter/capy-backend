@@ -5,6 +5,7 @@ export const UserCreateSchema = Type.Object({
     username: Type.String({ description: "Username for the new user, not to be confused with display name" }),
     display_name: Type.String({ description: "Display name for the new user, ideally the user's full name" }),
     password: Type.String({ description: "Password for the new user account" }),
+    avatar_url: Type.Optional(Type.String({ description: "URL to the user's avatar" })),
 });
 
 export type UserCreate = Static<typeof UserCreateSchema>;
